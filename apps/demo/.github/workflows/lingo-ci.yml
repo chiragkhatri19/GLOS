@@ -1,0 +1,23 @@
+name: Lingo.dev Auto-translate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'messages/en.json'
+      - 'app/**/*.tsx'
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: lingodotdev/lingo.dev@main
+        with:
+          api-key: ${{ secrets.LINGODOTDEV_API_KEY }}

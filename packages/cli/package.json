@@ -1,18 +1,49 @@
 {
-  "name": "@glos/cli",
+  "name": "@chiragbuilds/glos",
   "version": "1.0.0",
+  "description": "Give your AI translator eyes — screenshot-based UI context for dramatically better Lingo.dev translations",
   "bin": {
     "glos": "./dist/index.js"
   },
+  "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "lingo.dev",
+    "i18n",
+    "localization",
+    "translation",
+    "context",
+    "playwright",
+    "gemini",
+    "nextjs",
+    "vision",
+    "ai",
+    "glos"
+  ],
+  "author": "chiragbuilds",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chiragkhatri19/GLOS"
+  },
+  "homepage": "https://github.com/chiragkhatri19/GLOS#readme",
+  "engines": {
+    "node": ">=20.0.0"
   },
   "dependencies": {
+    "@glos/core": "file:../core",
     "commander": "^12.0.0",
-    "chalk": "^4.1.2",
-    "ora": "^5.4.1",
-    "dotenv": "^16.3.0"
+    "ora": "^8.0.0",
+    "chalk": "^5.3.0",
+    "dotenv": "^16.4.0"
   },
   "devDependencies": {
     "typescript": "^5.3.0",

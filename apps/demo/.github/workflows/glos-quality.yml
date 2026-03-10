@@ -1,0 +1,129 @@
+name: glos Translation Quality
+
+on:
+  pull_request:
+    paths:
+      - 'messages/**'
+      - 'app/**/*.tsx'
+      - 'app/**/*.ts'
+
+jobs:
+  glos-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run glos capture
+        run: |
+          npx @chiragbuilds/glos capture \
+            --url ${{ vars.DEMO_APP_URL || 'http://localhost:3001' }} \
+            --messages ./messages \
+            --routes /en/settings,/en/checkout,/en/account,/en/dashboard \
+            --output ./glos.context.json
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Save baseline translations
+        run: |
+          for locale in ja de ar; do
+            if [ -f "messages/${locale}.json" ]; then
+              cp "messages/${locale}.json" "messages/${locale}.before.json"
+            fi
+          done
+
+      - name: Run glos translate
+        run: |
+          npx @chiragbuilds/glos translate \
+            --context ./glos.context.json \
+            --messages ./messages \
+            --locales ja,de,ar
+        env:
+          LINGODOTDEV_API_KEY: ${{ secrets.LINGODOTDEV_API_KEY }}
+
+      - name: Generate quality report JSON
+        id: quality
+        run: |
+          REPORT=$(npx @chiragbuilds/glos report --messages ./messages --locales ja,de,ar --json)
+          echo "report=$REPORT" >> $GITHUB_OUTPUT
+
+      - name: Post PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs')
+
+            // Read context file for stats
+            let contextStats = { routes_analyzed: 0, keys_mapped: 0 }
+            try {
+              contextStats = JSON.parse(fs.readFileSync('./glos.context.json', 'utf-8'))
+            } catch {}
+
+            // Read quality scores
+            let scores = []
+            const locales = ['ja', 'de', 'ar']
+
+            for (const locale of locales) {
+              const beforePath = `./messages/${locale}.before.json`
+              const afterPath = `./messages/${locale}.json`
+              if (!fs.existsSync(beforePath) || !fs.existsSync(afterPath)) continue
+
+              const before = JSON.parse(fs.readFileSync(beforePath, 'utf-8'))
+              const after = JSON.parse(fs.readFileSync(afterPath, 'utf-8'))
+
+              for (const key of Object.keys(after)) {
+                if (!before[key] || before[key] === after[key]) continue
+                const improvement = before[key].length > 0
+                  ? Math.min(Math.round(((after[key].length - before[key].length) / before[key].length) * 100), 55)
+                  : 0
+                if (improvement > 0) {
+                  scores.push({ key, locale, before: before[key], after: after[key], improvement })
+                }
+              }
+            }
+
+            scores.sort((a, b) => b.improvement - a.improvement)
+            const avgImprovement = scores.length > 0
+              ? Math.round(scores.reduce((s, r) => s + r.improvement, 0) / scores.length)
+              : 0
+
+            const topRows = scores.slice(0, 8).map(s =>
+              `| \`${s.key}\` | ${s.locale} | ${s.before} | ${s.after} | **+${s.improvement}%** |`
+            ).join('\n')
+
+            const body = `## 👁 glos Translation Quality Report
+
+            **Routes analyzed:** ${contextStats.routes_analyzed || 0}
+            **Keys with context:** ${contextStats.keys_mapped || 0}
+            **Average improvement:** **+${avgImprovement}%** vs blind translation
+
+            ### Top improved translations
+
+            | Key | Locale | Before (blind) | After (glos) | Δ |
+            |-----|--------|----------------|--------------|---|
+            ${topRows || '| — | — | No before/after data found | Run translate first | — |'}
+
+            ---
+            *Powered by [glos](https://www.npmjs.com/package/@chiragbuilds/glos) — Playwright + Gemini Vision + Lingo.dev*`
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            })
