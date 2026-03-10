@@ -1,0 +1,19 @@
+{
+  "save": "Save",
+  "delete": "Delete",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "submit": "Submit",
+  "upgrade": "Upgrade your plan",
+  "next": "Next",
+  "back": "Back",
+  "done": "Done",
+  "edit": "Edit",
+  "close": "Close",
+  "continue": "Continue",
+  "nav.dashboard": "Dashboard",
+  "nav.settings": "Settings",
+  "nav.billing": "Billing",
+  "nav.account": "Account",
+  "view_all": "View all"
+}
