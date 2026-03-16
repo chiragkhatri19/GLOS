@@ -1,16 +1,16 @@
 import type { Metadata } from 'next'
-import { IBM_Plex_Mono, Geist } from 'next/font/google'
-import { Sidebar } from '@/components/layout/Sidebar'
+import { DM_Mono, DM_Sans } from 'next/font/google'
 import './globals.css'
 
-const ibmPlexMono = IBM_Plex_Mono({
+const dmMono = DM_Mono({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['300', '400', '500'],
   variable: '--font-mono',
 })
 
-const geist = Geist({
+const dmSans = DM_Sans({
   subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
   variable: '--font-sans',
 })
 
@@ -21,13 +21,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${ibmPlexMono.variable} ${geist.variable}`}>
-      <body style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
-        <Sidebar />
-        <main style={{ flex: 1, overflowY: 'auto', padding: '40px' }}>
-          {children}
-        </main>
-      </body>
+    <html lang="en" className={`${dmMono.variable} ${dmSans.variable}`} suppressHydrationWarning>
+      <body>{children}</body>
     </html>
   )
 }

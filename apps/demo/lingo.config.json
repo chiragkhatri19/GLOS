@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "locale": {
+    "source": "en",
+    "targets": ["ja","de","ar","fr","es","zh","hi","pt","ko","it"]
+  },
+  "runtime": {
+    "enabled": false
+  }
+}

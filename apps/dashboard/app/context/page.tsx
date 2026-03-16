@@ -122,7 +122,7 @@ export default function ContextPage() {
           <div style={{ maxHeight: '520px', overflowY: 'auto' }}>
             {loading ? (
               <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {[...Array(8)].map((_, i) => <Skeleton key={i} height="32px" />)}
+                {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-8 w-full" />)}
               </div>
             ) : filteredKeys.length === 0 ? (
               <div style={{ padding: '32px 16px', textAlign: 'center' }}>

@@ -106,20 +106,23 @@ jobs:
               `| \`${s.key}\` | ${s.locale} | ${s.before} | ${s.after} | **+${s.improvement}%** |`
             ).join('\n')
 
-            const body = `## 👁 glos Translation Quality Report
-
-            **Routes analyzed:** ${contextStats.routes_analyzed || 0}
-            **Keys with context:** ${contextStats.keys_mapped || 0}
-            **Average improvement:** **+${avgImprovement}%** vs blind translation
-
-            ### Top improved translations
-
-            | Key | Locale | Before (blind) | After (glos) | Δ |
-            |-----|--------|----------------|--------------|---|
-            ${topRows || '| — | — | No before/after data found | Run translate first | — |'}
-
-            ---
-            *Powered by [glos](https://www.npmjs.com/package/@chiragbuilds/glos) — Playwright + Gemini Vision + Lingo.dev*`
+            const lines = [
+              '## 👁 glos Translation Quality Report',
+              '',
+              `**Routes analyzed:** ${contextStats.routes_analyzed || 0}`,
+              `**Keys with context:** ${contextStats.keys_mapped || 0}`,
+              `**Average improvement:** **+${avgImprovement}%** vs blind translation`,
+              '',
+              '### Top improved translations',
+              '',
+              '| Key | Locale | Before (blind) | After (glos) | Δ |',
+              '|-----|--------|----------------|--------------|---|',
+              topRows || '| — | — | No before/after data found | Run translate first | — |',
+              '',
+              '---',
+              '*Powered by [glos](https://www.npmjs.com/package/@chiragbuilds/glos) — Playwright + Gemini Vision + Lingo.dev*',
+            ]
+            const body = lines.join('\n')
 
             await github.rest.issues.createComment({
               issue_number: context.issue.number,

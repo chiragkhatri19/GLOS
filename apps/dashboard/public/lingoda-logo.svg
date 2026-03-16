@@ -1,0 +1,15 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Lingo.dev Logo -->
+  <defs>
+    <linearGradient id="lingoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4f46e5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="url(#lingoGrad)"/>
+  
+  <!-- Stylized "L" for Lingo -->
+  <path d="M 65 60 L 65 140 L 85 140 L 85 80 L 135 80 L 135 60 Z" fill="white"/>
+</svg>

@@ -1,0 +1,17 @@
+{
+  "framework": "nextjs",
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
+  "buildCommand": "cd ../.. && pnpm build --filter=dashboard",
+  "outputDirectory": ".next",
+  "functions": {
+    "app/api/translate/route.ts": {
+      "maxDuration": 60
+    },
+    "app/api/quality/route.ts": {
+      "maxDuration": 30
+    },
+    "app/api/context/route.ts": {
+      "maxDuration": 15
+    }
+  }
+}

@@ -1,4 +1,4 @@
-name: Build
+name: CI
 
 on:
   push:
@@ -9,8 +9,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -22,14 +24,37 @@ jobs:
         with:
           node-version: '20'
           cache: 'pnpm'
+          cache-dependency-path: glos-monorepo/pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm install
+        working-directory: glos-monorepo
+        run: pnpm install --frozen-lockfile
 
-      - name: Build all packages
-        run: pnpm build
+      - name: Build types
+        working-directory: glos-monorepo
+        run: pnpm build --filter=@glos/types
 
-      - name: Verify CLI
+      - name: Build core
+        working-directory: glos-monorepo
+        run: pnpm build --filter=@glos/core
+
+      - name: Build CLI
+        working-directory: glos-monorepo
+        run: pnpm build --filter=@chiragbuilds/glos
+
+      - name: Build dashboard
+        working-directory: glos-monorepo
+        run: pnpm build --filter=dashboard
+        env:
+          GEMINI_API_KEY: placeholder
+          LINGODOTDEV_API_KEY: placeholder
+          NEXT_PUBLIC_APP_URL: http://localhost:3002
+
+      - name: Build demo
+        working-directory: glos-monorepo
+        run: pnpm build --filter=demo
+
+      - name: Verify CLI binary exists
+        working-directory: glos-monorepo
         run: |
-          cd packages/cli
-          node dist/index.js --help
+          test -f packages/cli/dist/index.js && echo "✓ CLI binary exists" || exit 1

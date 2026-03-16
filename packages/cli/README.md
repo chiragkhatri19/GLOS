@@ -1,71 +1,43 @@
-# @chiragbuilds/glos
+# glos.io
 
-> Give your AI translator eyes.
+> Your i18n pipeline is context-blind. glos fixes that.
 
-Lingo.dev has been translating your app blind. glos gives it eyes.
+glos crawls your live app, extracts every UI string with its DOM context,
+and makes your translations understand the difference between "Save" on 
+a form and "Save" in a danger zone.
 
-The word "save" appears 6 times in your app. On a settings form, a checkout page,
-a file manager. Lingo.dev translates all 6 the same way. In Japanese, that's wrong
-for at least 4 of them.
-
-glos screenshots your running app, reads every text element in its visual context
-using Gemini Vision, and feeds that context into Lingo.dev's translation engine.
-
-Same app. Same API key. Dramatically better translations.
-
-## Quick start
-
+## Usage
 ```bash
+# Scan your running app
 npx @chiragbuilds/glos capture --url http://localhost:3000
-npx @chiragbuilds/glos translate --locales ja,de,ar
+
+# View last scan report  
 npx @chiragbuilds/glos report
-```
 
-## Requirements
-
-- `GEMINI_API_KEY` — free at [aistudio.google.com](https://aistudio.google.com)
-- `LINGODOTDEV_API_KEY` — from [lingo.dev](https://lingo.dev)
-- Node.js 20+
-- Your app running (localhost or any URL)
-
-## Results
-
-| Key | Route | Before | After |
-|-----|-------|--------|-------|
-| `save` | `/settings` | 保存 | 変更を保存 |
-| `save` | `/checkout` | 保存 | 購入を確定する |
-| `delete` | `/account` | 削除 | アカウントを完全に削除する |
-| `confirm` | `/checkout` | 確認 | 購入を完了する |
-
-## Commands
-
-```bash
-glos capture --url <url>           # Screenshot app, extract context
-glos translate --locales ja,de,ar  # Translate with context
-glos report                        # Show before/after quality
-glos report --json                 # Machine-readable output (for CI)
-```
-
-## GitHub Action
-
-```yaml
-- uses: actions/checkout@v4
-
-- name: Run glos
-  run: |
-    npx @chiragbuilds/glos capture --url ${{ vars.DEMO_APP_URL }}
-    npx @chiragbuilds/glos translate --locales ja,de,ar
-    npx @chiragbuilds/glos report --json
-  env:
-    GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-    LINGODOTDEV_API_KEY: ${{ secrets.LINGODOTDEV_API_KEY }}
+# Output as JSON
+npx @chiragbuilds/glos report --json
 ```
 
 ## How it works
 
-1. **Playwright** screenshots every route of your app
-2. **Gemini Vision** reads each screenshot — extracts every UI text element with its context
-3. **glos** builds `glos.context.json` — maps every translation key to where it appears
-4. **Lingo.dev SDK** translates with context hints injected per key
+1. **CRAWL** — Playwright discovers every route automatically
+2. **EXTRACT** — Screenshots sent to Gemini vision for UI text extraction
+3. **ENRICH** — Each string gets classified with tone + ambiguity score
+4. **TRANSLATE** — Context-aware strings go to your translation pipeline
 
-Built for the Lingo.dev Hackathon #3.
+## Dashboard
+
+After scanning, open your glos dashboard at http://localhost:3002 to:
+- View the context map for every string
+- See translation quality across 10 locales  
+- Run Fix All to translate with context
+
+## Environment
+```bash
+GEMINI_API_KEY=your_key_here
+LINGODOTDEV_API_KEY=your_key_here
+```
+
+## Stack
+
+Built with Playwright, Gemini Vision, Lingo.dev SDK, Next.js 15.

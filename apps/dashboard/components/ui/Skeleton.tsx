@@ -1,18 +1,24 @@
-export function Skeleton({ width = '100%', height = '16px' }: { width?: string; height?: string }) {
-  return <div className="skeleton" style={{ width, height }} />
+import { cn } from "@/lib/utils"
+
+function Skeleton({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("animate-pulse rounded-md bg-primary/10", className)}
+      {...props}
+    />
+  )
 }
 
-export function StatCardSkeleton() {
+function StatSkeleton() {
   return (
-    <div style={{
-      background: 'var(--surface-2)',
-      border: '1px solid var(--border)',
-      borderRadius: '10px',
-      padding: '28px',
-    }}>
-      <Skeleton width="80px" height="11px" />
-      <div style={{ marginTop: '16px' }}><Skeleton width="60px" height="52px" /></div>
-      <div style={{ marginTop: '10px' }}><Skeleton width="120px" height="13px" /></div>
+    <div className="space-y-2">
+      <Skeleton className="h-4 w-[100px]" />
+      <Skeleton className="h-8 w-[60px]" />
     </div>
   )
 }
+
+export { Skeleton, StatSkeleton }
