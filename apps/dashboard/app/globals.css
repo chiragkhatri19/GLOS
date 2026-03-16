@@ -1,26 +1,161 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Background colors - matching landing page */
+  --bg:            #09090b;
+  --surface:       #111113;
+  --surface-2:     rgba(255,255,255,0.03);
+  --surface-3:     rgba(255,255,255,0.06);
+  --surface-4:     rgba(255,255,255,0.08);
+
+  /* Borders - matching landing page */
+  --border:        rgba(255,255,255,0.06);
+  --border-2:      rgba(255,255,255,0.1);
+  --border-accent: rgba(163,230,53,0.3);
+
+  /* Primary - changed from indigo to lime green */
+  --primary:       #a3e635;
+  --primary-dim:   rgba(163,230,53,0.15);
+  --primary-glow:  0 0 40px rgba(163,230,53,0.2);
+
+  /* Accent colors - matching landing page terminal */
+  --cyan:          #bef264;
+  --cyan-dim:      rgba(190,242,100,0.1);
+  --red:           #f87171;
+  --red-dim:       rgba(248,113,113,0.1);
+  --amber:         #fef08a;
+  --amber-dim:     rgba(254,240,138,0.1);
+  --green:         #84cc16;
+  --green-dim:     rgba(132,204,22,0.1);
+
+  /* Text colors - matching landing page */
+  --text:          #f4f4f5;
+  --text-2:        #a1a1aa;
+  --text-3:        #71717a;
+
+  /* Fonts */
+  --mono:          var(--font-mono), 'Courier New', monospace;
+  --sans:          var(--font-sans), sans-serif;
+
+  /* Border radius - matching landing page */
+  --r-sm:          8px;
+  --r:             12px;
+  --r-lg:          16px;
+  --sidebar:            hsl(0 0% 98%);
+  --sidebar-foreground:            hsl(240 5.3% 26.1%);
+  --sidebar-primary:            hsl(240 5.9% 10%);
+  --sidebar-primary-foreground:            hsl(0 0% 98%);
+  --sidebar-accent:            hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground:            hsl(240 5.9% 10%);
+  --sidebar-border:            hsl(220 13% 91%);
+  --sidebar-ring:            hsl(217.2 91.2% 59.8%);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg); color: var(--text); }
+body { font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 99px; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+@keyframes scan-line {
+  0%   { transform: translateY(-20px); opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateY(160px); opacity: 0; }
+}
+@keyframes progress-bar {
+  0%   { transform: translateX(-100%) scaleX(0.3); }
+  50%  { transform: translateX(60%)   scaleX(0.7); }
+  100% { transform: translateX(200%)  scaleX(0.3); }
+}
+
+.fade-up  { animation: fadeUp  400ms ease forwards; opacity: 0; }
+.fade-in  { animation: fadeIn  300ms ease forwards; opacity: 0; }
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+
+.skeleton {
+  background: linear-gradient(90deg,
+    var(--surface-2) 25%,
+    var(--surface-3) 50%,
+    var(--surface-2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+  border-radius: var(--r-sm);
+}
+
+.row-hover:hover { background: var(--surface-2) !important; cursor: pointer; }
+.card-hover:hover { border-color: var(--border-accent) !important; }
+.nav-link-hover:hover { color: var(--primary) !important; }
+
+/* Responsive Utilities */
+@media (max-width: 1024px) {
+  .lg-stack { flex-direction: column !important; }
+  .lg-grid-1 { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 768px) {
+  .md-stack { flex-direction: column !important; }
+  .md-grid-1 { grid-template-columns: 1fr !important; }
+  .md-grid-2 { grid-template-columns: repeat(2, 1fr) !important; }
+  .hide-on-mobile { display: none !important; }
+  .mobile-p-4 { padding: 16px !important; }
+}
+
+@media (max-width: 480px) {
+  .sm-grid-1 { grid-template-columns: 1fr !important; }
+}
+
+/* Accessibility Focus */
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Page Transitions */
+.page-enter { opacity: 0; transform: translateY(10px); }
+.page-enter-active { opacity: 1; transform: translateY(0); transition: opacity 400ms, transform 400ms cubic-bezier(0.22, 1, 0.36, 1); }
+.page-exit { opacity: 1; }
+.page-exit-active { opacity: 0; transition: opacity 200ms; }
+
+.dark {
+  --sidebar:            hsl(240 5.9% 10%);
+  --sidebar-foreground:            hsl(240 4.8% 95.9%);
+  --sidebar-primary:            hsl(224.3 76.3% 48%);
+  --sidebar-primary-foreground:            hsl(0 0% 100%);
+  --sidebar-accent:            hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground:            hsl(240 4.8% 95.9%);
+  --sidebar-border:            hsl(240 3.7% 15.9%);
+  --sidebar-ring:            hsl(217.2 91.2% 59.8%);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  --color-sidebar:            var(--sidebar);
+  --color-sidebar-foreground:            var(--sidebar-foreground);
+  --color-sidebar-primary:            var(--sidebar-primary);
+  --color-sidebar-primary-foreground:            var(--sidebar-primary-foreground);
+  --color-sidebar-accent:            var(--sidebar-accent);
+  --color-sidebar-accent-foreground:            var(--sidebar-accent-foreground);
+  --color-sidebar-border:            var(--sidebar-border);
+  --color-sidebar-ring:            var(--sidebar-ring);
 }

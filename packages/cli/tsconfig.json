@@ -1,18 +1,18 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "CommonJS",
-    "lib": ["ES2020"],
-    "declaration": true,
+    "module": "commonjs",
+    "lib": ["ES2020", "DOM"],
     "outDir": "./dist",
-    "strict": true,
+    "rootDir": "./src",
+    "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
-    "paths": {
-      "@glos/core": ["../core/src"]
-    }
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true
   },
-  "include": ["src/**/*", "../core/src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

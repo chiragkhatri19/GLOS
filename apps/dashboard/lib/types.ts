@@ -20,8 +20,10 @@ export interface QualityScore {
   key: string
   route: string
   locale: string
+  source_en: string
   before: string
   after: string
+  context_hint: string
   improvement_percent: number
 }
 
@@ -42,6 +44,7 @@ export interface CaptureResponse {
   routes_analyzed: number
   keys_mapped: number
   error?: string
+  warnings?: string[]
 }
 
 export interface TranslateRequest {

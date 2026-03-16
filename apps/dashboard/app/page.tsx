@@ -1,3 +1,4 @@
-export default function OverviewPage() {
-  return <div id="overview-page" />
+import { redirect } from 'next/navigation'
+export default function Root() {
+  redirect('/landing')
 }
